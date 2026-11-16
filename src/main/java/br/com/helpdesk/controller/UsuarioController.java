@@ -64,7 +64,7 @@ public class UsuarioController {
         redirectAttributes.addFlashAttribute("mensagem", "Usuário cadastrado com sucesso.");
         return "redirect:/usuarios/novo";
     }
-    
+
     @GetMapping("/usuarios/{id}/editar")
     public String abrirEdicao(@PathVariable("id") Long id, Model model) {
         Usuario usuario = buscarUsuario(id);
@@ -104,6 +104,23 @@ public class UsuarioController {
         return "redirect:/usuarios";
     }
 
+    @PostMapping("/usuarios/{id}/excluir")
+    public String excluir(@PathVariable("id") Long id,
+            RedirectAttributes redirectAttributes) {
+        Usuario usuario = buscarUsuario(id);
+
+        try {
+            usuarioRepository.delete(usuario);
+        } catch (DataIntegrityViolationException ex) {
+            redirectAttributes.addFlashAttribute("mensagem",
+                    "Não foi possível excluir este usuário porque ele está vinculado a outro registro.");
+            return "redirect:/usuarios";
+        }
+
+        redirectAttributes.addFlashAttribute("mensagem", "Usuário excluído com sucesso.");
+        return "redirect:/usuarios";
+    }
+
     private Usuario buscarUsuario(Long id) {
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -111,13 +128,8 @@ public class UsuarioController {
     }
 
     public record CadastroUsuario(
-            @NotBlank(message = "Informe o nome.")
-            @Size(max = 120, message = "O nome deve ter até 120 caracteres.")
-            String nome,
+            @NotBlank(message = "Informe o nome.") @Size(max = 120, message = "O nome deve ter até 120 caracteres.") String nome,
 
-            @NotBlank(message = "Informe o e-mail.")
-            @Email(message = "Informe um e-mail válido.")
-            @Size(max = 254, message = "O e-mail deve ter até 254 caracteres.")
-            String email) {
+            @NotBlank(message = "Informe o e-mail.") @Email(message = "Informe um e-mail válido.") @Size(max = 254, message = "O e-mail deve ter até 254 caracteres.") String email) {
     }
 }

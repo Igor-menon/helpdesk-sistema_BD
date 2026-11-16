@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Usuários | HelpDesk</title>
 </head>
+
 <body>
     <h1>Usuários cadastrados</h1>
     <p th:if="${mensagem}" th:text="${mensagem}" role="status"></p>
@@ -27,9 +29,15 @@
                 <td th:text="${usuario.email}"></td>
                 <td>
                     <a th:href="@{/usuarios/{id}/editar(id=${usuario.id})}">Editar</a>
+
+                    <form method="post" th:action="@{/usuarios/{id}/excluir(id=${usuario.id})}"
+                        onsubmit="return confirm('Excluir este usuário?');">
+                        <button type="submit">Excluir</button>
+                    </form>
                 </td>
             </tr>
         </tbody>
     </table>
 </body>
+
 </html>
