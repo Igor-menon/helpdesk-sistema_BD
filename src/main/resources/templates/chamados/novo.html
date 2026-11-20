@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Novo chamado | HelpDesk</title>
+</head>
+<body>
+    <h1>Novo chamado</h1>
+
+    <p th:if="${mensagem}" th:text="${mensagem}" role="status"></p>
+
+    <p th:if="${#lists.isEmpty(usuarios)}">
+        Cadastre um usuário antes de abrir um chamado.
+    </p>
+
+    <form method="post"
+          th:action="@{/chamados/novo}"
+          th:object="${cadastro}">
+
+        <p th:if="${#fields.hasGlobalErrors()}"
+           th:errors="*{global}"
+           role="alert"></p>
+
+        <p>
+            <label for="titulo">Título</label>
+            <input type="text"
+                   th:field="*{titulo}"
+                   maxlength="150"
+                   required>
+            <span th:errors="*{titulo}"></span>
+        </p>
+
+        <p>
+            <label for="descricao">Descrição</label>
+            <textarea th:field="*{descricao}"
+                      rows="5"
+                      cols="50"
+                      maxlength="2000"
+                      required></textarea>
+            <span th:errors="*{descricao}"></span>
+        </p>
+
+        <p>
+            <label for="usuarioId">Usuário solicitante</label>
+            <select th:field="*{usuarioId}" required>
+                <option value="">Selecione um usuário</option>
+                <option th:each="usuario : ${usuarios}"
+                        th:value="${usuario.id}"
+                        th:text="${usuario.nome + ' (' + usuario.email + ')'}">
+                </option>
+            </select>
+            <span th:errors="*{usuarioId}"></span>
+        </p>
+
+        <button type="submit"
+                th:disabled="${#lists.isEmpty(usuarios)}">
+            Cadastrar chamado
+        </button>
+    </form>
+
+    <p><a th:href="@{/usuarios}">Ver usuários cadastrados</a></p>
+    <p><a th:href="@{/usuarios/novo}">Cadastrar usuário</a></p>
+    <p><a th:href="@{/chamados}">Ver chamados cadastrados</a></p>
+</body>
+</html>

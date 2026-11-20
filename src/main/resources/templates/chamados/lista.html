@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chamados | HelpDesk</title>
+</head>
+<body>
+    <h1>Chamados cadastrados</h1>
+
+    <p th:if="${mensagem}" th:text="${mensagem}" role="status"></p>
+
+    <p><a th:href="@{/chamados/novo}">Novo chamado</a></p>
+    <p><a th:href="@{/usuarios}">Ver usuários</a></p>
+
+    <!-- Resumo obtido pela consulta com COUNT -->
+    <section th:unless="${#lists.isEmpty(resumoStatus)}">
+        <h2>Resumo por status</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th scope="col">Status</th>
+                    <th scope="col">Quantidade</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${resumoStatus}">
+                    <td th:text="${item.status}"></td>
+                    <td th:text="${item.quantidade}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Lista dos chamados -->
+    <p th:if="${#lists.isEmpty(chamados)}">
+        Nenhum chamado cadastrado.
+    </p>
+
+    <table th:unless="${#lists.isEmpty(chamados)}">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Título</th>
+                <th scope="col">Descrição</th>
+                <th scope="col">Status</th>
+                <th scope="col">Solicitante</th>
+                <th scope="col">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="chamado : ${chamados}">
+                <td th:text="${chamado.id}"></td>
+                <td th:text="${chamado.titulo}"></td>
+                <td th:text="${chamado.descricao}"></td>
+                <td th:text="${chamado.status}"></td>
+                <td th:text="${chamado.solicitante.nome}"></td>
+                <td>
+                    <a th:href="@{/chamados/{id}/editar(id=${chamado.id})}">
+                        Editar
+                    </a>
+
+                    <form method="post"
+                          th:action="@{/chamados/{id}/excluir(id=${chamado.id})}"
+                          onsubmit="return confirm('Deseja excluir este chamado?');"
+                          style="display: inline;">
+                        <button type="submit">Excluir</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p><a th:href="@{/chamados}">Ver chamados cadastrados</a></p>
+</body>
+</html>

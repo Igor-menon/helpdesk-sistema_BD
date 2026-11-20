@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar chamado | HelpDesk</title>
+</head>
+<body>
+    <h1>Editar chamado</h1>
+
+    <p>Chamado nº <span th:text="${chamadoId}"></span></p>
+
+    <form method="post"
+          th:action="@{/chamados/{id}/editar(id=${chamadoId})}"
+          th:object="${edicao}">
+
+        <p th:if="${#fields.hasGlobalErrors()}"
+           th:errors="*{global}"
+           role="alert"></p>
+
+        <p>
+            <label for="titulo">Título</label>
+            <input type="text"
+                   th:field="*{titulo}"
+                   maxlength="150"
+                   required>
+            <span th:errors="*{titulo}"></span>
+        </p>
+
+        <p>
+            <label for="descricao">Descrição</label>
+            <textarea th:field="*{descricao}"
+                      rows="5"
+                      cols="50"
+                      maxlength="2000"
+                      required></textarea>
+            <span th:errors="*{descricao}"></span>
+        </p>
+
+        <p>
+            <label for="status">Status</label>
+            <select th:field="*{status}" required>
+                <option value="">Selecione um status</option>
+                <option th:each="opcao : ${statusDisponiveis}"
+                        th:value="${opcao}"
+                        th:text="${opcao}">
+                </option>
+            </select>
+            <span th:errors="*{status}"></span>
+        </p>
+
+        <button type="submit">Salvar alterações</button>
+    </form>
+
+    <p><a th:href="@{/chamados}">Voltar para os chamados</a></p>
+</body>
+</html>
